@@ -7,7 +7,10 @@ import project.dto.userdto.ChangeUserDataDto;
 import project.dto.userdto.NewUserDto;
 import project.dto.userdto.UserDataForSession;
 import project.dto.userdto.UserDto;
+import project.dto.userdto.UserForAdminDto;
 import project.entity.User;
+
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserService {
@@ -18,8 +21,8 @@ public class UserService {
         return UserDao.getInstance().getByLoginAndPassword(userDto);
     }
 
-    public User getById(Long id) {
-        return UserDao.getInstance().getById(id);
+    public List<UserForAdminDto> getAll() {
+        return UserDao.getInstance().getAll();
     }
 
     public Long save(NewUserDto newUser) {

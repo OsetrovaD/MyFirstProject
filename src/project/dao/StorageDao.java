@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import project.connection.ConnectionPool;
 import project.entity.Storage;
+import project.exception.DaoException;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -19,42 +20,42 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 public class StorageDao {
     private static final StorageDao INSTANCE = new StorageDao();
     private static final String GET_BY_GAME_ID =
-            "SELECT id, game_id, number, last_addition_date " +
+            "SELECT id, game_game_platform_id, number, last_addition_date " +
                     "FROM computer_games_e_shop_storage.storage " +
-                    "WHERE game_id = ?";
+                    "WHERE game_game_platform_id = ?";
     private static final String GET_BY_TIME_PERIOD =
-            "SELECT id, game_id, number, last_addition_date " +
+            "SELECT id, game_game_platform_id, number, last_addition_date " +
                     "FROM computer_games_e_shop_storage.storage " +
                     "WHERE last_addition_date BETWEEN ? AND ?";
     private static final String SAVE =
-            "INSERT INTO computer_games_e_shop_storage.storage (game_id, number, last_addition_date) " +
+            "INSERT INTO computer_games_e_shop_storage.storage (game_game_platform_id, number, last_addition_date) " +
                     "VALUES (?, ?, now())";
     private static final String UPDATE =
             "UPDATE computer_games_e_shop_storage.storage " +
                     "SET number = ?, last_addition_date = now() " +
-                    "WHERE game_id = ?";
+                    "WHERE game_game_platform_id = ?";
 
-    public Long save(Storage storage) {
+    public Long save(Long platformPriceId, Short number) {
         Long id = null;
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE, RETURN_GENERATED_KEYS)) {
-            preparedStatement.setLong(1, storage.getGameId());
-            preparedStatement.setShort(2, storage.getNumber());
+            preparedStatement.setLong(1, platformPriceId);
+            preparedStatement.setShort(2, number);
 
+            preparedStatement.executeUpdate();
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
                 id = generatedKeys.getLong("id");
-                storage.setId(id);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException(e);
         }
 
         return id;
     }
 
-    public static boolean update(Storage storage) {
-        boolean result = false;
+    public boolean update(Storage storage) {
+        boolean result;
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE)) {
             preparedStatement.setShort(1, storage.getNumber());
@@ -63,13 +64,13 @@ public class StorageDao {
             result = preparedStatement.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException(e);
         }
 
         return result;
     }
 
-    public static Storage getByGameId(Long id) {
+    public Storage getByGameId(Long id) {
         Storage storage = null;
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_BY_GAME_ID)) {
@@ -85,13 +86,13 @@ public class StorageDao {
                         .build();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException(e);
         }
 
         return storage;
     }
 
-    public static List<Storage> getByTimePeriod(String startDate, String finishDate) {
+    public List<Storage> getByTimePeriod(String startDate, String finishDate) {
         List<Storage> storages = new ArrayList<>();
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_BY_TIME_PERIOD)) {
@@ -108,7 +109,7 @@ public class StorageDao {
                         .build());
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException(e);
         }
 
         return storages;

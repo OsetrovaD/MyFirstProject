@@ -5,15 +5,18 @@ import lombok.NoArgsConstructor;
 import project.connection.ConnectionPool;
 import project.dto.userdto.UserDataForSession;
 import project.dto.userdto.UserDto;
-import project.entity.Comment;
+import project.dto.userdto.UserForAdminDto;
 import project.entity.User;
 import project.entity.enumonly.Role;
-import project.util.ConnectionManager;
+import project.exception.DaoException;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static project.entity.enumonly.Role.USER;
@@ -22,16 +25,16 @@ import static project.entity.enumonly.Role.USER;
 public class UserDao {
 
     private static final UserDao INSTANCE = new UserDao();
-    private static final String GET_BY_ID =
-            "SELECT ud.id as user_id, ud.login, ud.password, ud.first_name, " +
-                    "ud.last_name, ud.phone_number, ud.e_mail, ud.address, ud.role," +
-                    "c2.id as comment_id, c2.game_id, c2.text, c2.date " +
-            "FROM computer_games_e_shop_storage.user_data ud " +
-            "LEFT JOIN computer_games_e_shop_storage.comment c2 ON ud.id = c2.user_id " +
-            "WHERE ud.id = ?";
+    private static final String GET_ALL =
+            "SELECT id as user_id, login, first_name, " +
+                    "last_name, phone_number, e_mail, address, role " +
+            "FROM computer_games_e_shop_storage.user_data";
     private static final String UPDATE_CONTACTS =
             "UPDATE computer_games_e_shop_storage.user_data " +
             "SET first_name=?, last_name=?, phone_number = ?, e_mail = ?, address = ? " +
+            "WHERE id = ?";
+    private static final String UPDATE_ROLE = "UPDATE computer_games_e_shop_storage.user_data " +
+            "SET role = ? " +
             "WHERE id = ?";
     private static final String SAVE =
             "INSERT INTO computer_games_e_shop_storage.user_data " +
@@ -55,7 +58,7 @@ public class UserDao {
                         .build();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException(e);
         }
 
         return userData;
@@ -82,14 +85,30 @@ public class UserDao {
                 user.setId(id);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException(e);
         }
 
         return id;
     }
 
+    public boolean updateRole(Long userId, Role role) {
+        boolean result;
+        try (Connection connection = ConnectionPool.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROLE)) {
+            preparedStatement.setString(1, role.getName());
+            preparedStatement.setLong(2, userId);
+
+            result = preparedStatement.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+
+        return result;
+    }
+
     public boolean update(User user) {
-        boolean result = false;
+        boolean result;
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CONTACTS)) {
             preparedStatement.setString(1, user.getFirstName());
@@ -102,47 +121,35 @@ public class UserDao {
             result = preparedStatement.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException(e);
         }
 
         return result;
     }
 
-    public User getById(Long id) {
-        User user = null;
+    public List<UserForAdminDto> getAll() {
+        List<UserForAdminDto> users = new ArrayList<>();
         try (Connection connection = ConnectionPool.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_BY_ID)) {
-            preparedStatement.setLong(1, id);
+             Statement statement = connection.createStatement()) {
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = statement.executeQuery(GET_ALL);
             while (resultSet.next()) {
-                if (user == null) {
-                    user = User.builder()
-                            .id(resultSet.getLong("user_id"))
-                            .login(resultSet.getString("login"))
-                            .password(resultSet.getString("password"))
-                            .firstName(resultSet.getString("first_name"))
-                            .lastName(resultSet.getString("last_name"))
-                            .email(resultSet.getString("e_mail"))
-                            .phoneNumber(resultSet.getString("phone_number"))
-                            .role(Role.getByName(resultSet.getString("role")))
-                            .address(resultSet.getString("address"))
-                            .comments(new HashSet<>())
-                            .build();
-                }
-                user.getComments().add(Comment.builder()
-                        .id(resultSet.getLong("comment_id"))
-                        .gameId(resultSet.getLong("game_id"))
-                        .userId(resultSet.getLong("user_id"))
-                        .text(resultSet.getString("text"))
-                        .date(resultSet.getDate("date"))
+                users.add(UserForAdminDto.builder()
+                        .id(resultSet.getLong("user_id"))
+                        .login(resultSet.getString("login"))
+                        .firstName(resultSet.getString("first_name"))
+                        .lastName(resultSet.getString("last_name"))
+                        .email(resultSet.getString("e_mail"))
+                        .phoneNumber(resultSet.getString("phone_number"))
+                        .role(Role.getByName(resultSet.getString("role")))
+                        .address(resultSet.getString("address"))
                         .build());
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException(e);
         }
 
-        return user;
+        return users;
     }
 
     public static UserDao getInstance() {

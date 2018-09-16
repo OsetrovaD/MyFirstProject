@@ -11,7 +11,9 @@
     <title>Поиск игр</title>
 </head>
 <body>
-<h3>По какому параметру будем искать?</h3>
+<%@ include file="header.jsp"%>
+<br>
+<h3 style="padding-top: 20px">По какому параметру будем искать?</h3>
     <form method="post" action="${pageContext.request.contextPath}/game-search">
         <input type="radio" name="radio_group" value="by_name" id="check_group_01" checked>
         <label for="check_group_01">Название игры</label><br>

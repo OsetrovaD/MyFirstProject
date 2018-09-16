@@ -11,7 +11,9 @@
     <title>Обновление данных</title>
 </head>
 <body>
-    <p>Обновление данных прошло успешно!</p>
+    <%@ include file="header.jsp"%>
+    <br>
+    <p style="padding-top: 20px">Успешно сохранено!</p>
     <p><a href="${pageContext.request.contextPath}/user">Домой</a>
 </body>
 </html>

@@ -7,8 +7,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import project.entity.enumonly.Role;
 
-import java.util.Set;
-
 @Data
 @EqualsAndHashCode(of = "id")
 @AllArgsConstructor
@@ -25,6 +23,4 @@ public class User {
     private String phoneNumber;
     private String address;
     private Role role;
-    private Set<Comment> comments;
-
 }

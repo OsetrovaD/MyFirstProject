@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Subgenre {
 
+    private Integer id;
     private String name;
 }

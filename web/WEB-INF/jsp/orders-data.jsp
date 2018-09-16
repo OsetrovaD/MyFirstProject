@@ -4,7 +4,9 @@
     <title>Мои заказы</title>
 </head>
 <body>
-<P>Здесь будут отображаться заказы.</P>
-<p><a href="${pageContext.request.contextPath}/user">Домой</a></p>
+    <%@ include file="header.jsp"%>
+    <br>
+    <p style="padding-top: 20px">Здесь будут отображаться заказы.</p>
+    <p><a href="${pageContext.request.contextPath}/user">Домой</a></p>
 </body>
 </html>

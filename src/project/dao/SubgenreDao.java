@@ -7,6 +7,7 @@ import project.entity.Subgenre;
 import project.exception.DaoException;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -18,9 +19,10 @@ public class SubgenreDao {
 
     private static final SubgenreDao INSTANCE = new SubgenreDao();
     private static final String GET_ALL =
-            "SELECT s.name as subgenre_name, g.name as genre_name " +
-            "FROM computer_games_e_shop_storage.subgenre s " +
-            "JOIN computer_games_e_shop_storage.genre g on s.genre_id = g.id";
+            "SELECT name, id  " +
+            "FROM computer_games_e_shop_storage.subgenre ";
+    private static final String SET_NEW_GAME_SUBGENRE =
+            "INSERT INTO computer_games_e_shop_storage.game_subgenre (game_id, subgenre_id) VALUES (?, ?)";
 
     public List<Subgenre> getAll() {
         List<Subgenre> subgenres = new ArrayList<>();
@@ -29,7 +31,8 @@ public class SubgenreDao {
             ResultSet resultSet = statement.executeQuery(GET_ALL);
             while (resultSet.next()) {
                 subgenres.add(Subgenre.builder()
-                        .name(resultSet.getString("subgenre_name"))
+                        .id(resultSet.getInt("id"))
+                        .name(resultSet.getString("name"))
                         .build());
             }
         } catch (SQLException e) {
@@ -37,6 +40,22 @@ public class SubgenreDao {
         }
 
         return subgenres;
+    }
+
+    public boolean isSubgenreAdded(Long gameId, Integer subgenreId) {
+        boolean result;
+
+        try (Connection connection = ConnectionPool.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SET_NEW_GAME_SUBGENRE)) {
+            preparedStatement.setLong(1, gameId);
+            preparedStatement.setInt(2, subgenreId);
+
+            result = preparedStatement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+
+        return result;
     }
 
     public static SubgenreDao getInstance() {

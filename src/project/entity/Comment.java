@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Data
 @EqualsAndHashCode(of = "id")
@@ -19,5 +19,5 @@ public class Comment {
     private Long gameId;
     private Long userId;
     private String text;
-    private Date date;
+    private LocalDate date;
 }

@@ -58,7 +58,7 @@ public class OrderDao {
                         .build());
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException(e);
         }
 
         return orders;

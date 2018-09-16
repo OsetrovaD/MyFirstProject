@@ -11,13 +11,14 @@
     <title>Поиск по году выпуска</title>
 </head>
 <body>
-<p>Год выпуска: </p>
+<%@ include file="header.jsp"%>
+<br>
+<p style="padding-top: 20px">Год выпуска: </p>
 <form method="post" action="${pageContext.request.contextPath}/search-result?url=/by-issue-year-search">
     <label>
-        <input type="text" name="values" pattern="[0-9]{4}" maxlength="4" required autofocus>
+        <input type="text" name="values" pattern="\d{4}" maxlength="4" required autofocus>
     </label><span>*</span>
     <input type="submit" value="Искать"><br>
 </form>
-<p><a href="${pageContext.request.contextPath}/game-search">Назад</a> | <a href="${pageContext.request.contextPath}/user">Домой</a></p>
 </body>
 </html>

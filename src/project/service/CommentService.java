@@ -3,6 +3,9 @@ package project.service;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import project.dao.CommentDao;
+import project.dto.commentdto.GameCommentDto;
+import project.dto.commentdto.NewCommentDto;
+import project.dto.commentdto.UserCommentDto;
 import project.entity.Comment;
 
 import java.util.List;
@@ -12,8 +15,16 @@ public class CommentService {
 
     private static final CommentService INSTANCE = new CommentService();
 
-    public List<Comment> getByUserOrGameId(Long userId) {
-        return CommentDao.getInstance().getByUserId(userId);
+    public List<UserCommentDto> getByUserId(Long gameId) {
+        return CommentDao.getInstance().getByUserId(gameId);
+    }
+
+    public List<GameCommentDto> getByGameId(Long id) {
+        return CommentDao.getInstance().getByGameId(id);
+    }
+
+    public Long add(NewCommentDto comment) {
+        return CommentDao.getInstance().save(comment);
     }
 
     public static CommentService getInstance() {

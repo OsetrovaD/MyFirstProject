@@ -6,13 +6,14 @@
     <title>Поиск по поджанру</title>
 </head>
 <body>
-<p>Поджанр: </p>
+<%@ include file="header.jsp"%>
+<br>
+<p style="padding-top: 20px">Поджанр: </p>
 <form method="post" action="${pageContext.request.contextPath}/search-result?url=/by-subgenre-search">
     <c:forEach var="subgenre" items="${requestScope.subgenres}">
         <input type="radio" name="values" value="${subgenre.name}" id="genres"><label for="genres">${subgenre.name}</label><br>
     </c:forEach>
     <input type="submit" value="Выбрать">
 </form>
-<p><a href="${pageContext.request.contextPath}/game-search">Назад</a> | <a href="${pageContext.request.contextPath}/user">Домой</a></p>
 </body>
 </html>

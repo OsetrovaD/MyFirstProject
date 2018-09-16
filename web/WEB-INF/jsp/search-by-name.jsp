@@ -11,13 +11,14 @@
     <title>Поиск по названию</title>
 </head>
 <body>
-<p>Название: </p>
+<%@ include file="header.jsp"%>
+<br>
+<p style="padding-top: 20px">Название: </p>
 <form method="post" action="${pageContext.request.contextPath}/search-result?url=/by-name-search">
     <label>
         <input type="text" name="values" maxlength="60" required autofocus>
     </label><span>*</span>
     <input type="submit" value="Искать"><br>
 </form>
-    <p><a href="${pageContext.request.contextPath}/game-search">Назад</a> | <a href="${pageContext.request.contextPath}/user">Домой</a></p>
 </body>
 </html>

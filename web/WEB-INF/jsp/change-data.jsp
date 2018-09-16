@@ -4,7 +4,9 @@
     <title>Изменение данных</title>
 </head>
 <body>
-    <form action="${pageContext.request.contextPath}/change-data" method="post">
+<%@ include file="header.jsp"%>
+<br>
+    <form action="${pageContext.request.contextPath}/change-data" method="post" style="padding-top: 50px">
         <input type="text" id="first_name_01" name="first_name" size="60">
         <label for="first_name_01">Имя</label><br>
         <input type="text" id="last_name_01" name="last_name" size="60">

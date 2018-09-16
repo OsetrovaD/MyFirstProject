@@ -11,29 +11,35 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/search-result")
-public class SearchResultServlet extends HttpServlet {
+public class GameSearchResultServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<GameNameDto> games;
+        List<GameNameDto> games = null;
+        Game game = null;
         switch (req.getParameter("url")) {
             case "/by-issue-year-search":
                 games = GameService.getInstance().getByIssueYear(Integer.valueOf(req.getParameter("values")));
-                req.setAttribute("games", games);
-                getServletContext().getRequestDispatcher(JspPathUtil.getPath("search-result")).forward(req, resp);
                 break;
             case "/by-name-search":
-                Game game = GameService.getInstance().getByName(req.getParameter("values"));
-                resp.sendRedirect("/game-info?id=" + game.getId());
+                game = GameService.getInstance().getByName(req.getParameter("values"));
                 break;
             default:
                 games = GameService.getInstance().getByCharacteristic(req.getParameter("values"), req.getParameter("url"));
-                req.setAttribute("games", games);
-                getServletContext().getRequestDispatcher(JspPathUtil.getPath("search-result")).forward(req, resp);
                 break;
+        }
+
+        if (game == null && games == null) {
+            resp.sendRedirect("/no-result");
+        } else if (game != null) {
+            resp.sendRedirect("/game-info?id=" + game.getId());
+        } else {
+            req.setAttribute("games", games);
+            getServletContext().getRequestDispatcher(JspPathUtil.getPath("search-result")).forward(req, resp);
         }
     }
 }

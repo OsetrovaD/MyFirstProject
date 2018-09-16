@@ -31,6 +31,5 @@ public class Game {
     private Set<String> genre;
     private Set<String> subgenre;
     private Map<GamePlatform, Integer> platformPrice;
-    private Set<Comment> comment;
     private Set<String> screenshots;
 }
