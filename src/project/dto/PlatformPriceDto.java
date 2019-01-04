@@ -14,5 +14,5 @@ import java.util.Map;
 @Builder
 public class PlatformPriceDto {
 
-    Map<GamePlatform, Integer> platformPrice;
+    private Map<GamePlatform, Integer> platformPrice;
 }

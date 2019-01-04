@@ -15,10 +15,13 @@ import java.util.List;
 @WebServlet("/by-subgenre-search")
 public class GameSubgenreSearchServlet extends HttpServlet {
 
+    private static final String PAGE_NAME = "search-by-subgenre";
+    private static final String SUBGENRES_PARAMETER = "subgenres";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<Subgenre> subgenres = SubgenreService.getInstance().getAll();
-        req.setAttribute("subgenres", subgenres);
-        getServletContext().getRequestDispatcher(JspPathUtil.getPath("search-by-subgenre")).forward(req, resp);
+        req.setAttribute(SUBGENRES_PARAMETER, subgenres);
+        getServletContext().getRequestDispatcher(JspPathUtil.getPath(PAGE_NAME)).forward(req, resp);
     }
 }

@@ -8,7 +8,6 @@ import java.util.Objects;
 public class StringUtil {
 
     private static final String EMPTY = "";
-    private static final String ZERO = "0";
 
     public static boolean isEmpty(String value) {
         return Objects.isNull(value) || EMPTY.equals(value.trim());
@@ -22,7 +21,7 @@ public class StringUtil {
         boolean result = true;
 
         for (String number : numbers) {
-            if (isNumberAsStringWrong(number)) {
+            if (isNotEmpty(number) && isNumberAsStringWrong(number)) {
                 result = false;
             }
         }

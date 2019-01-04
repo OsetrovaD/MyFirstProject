@@ -15,11 +15,18 @@ import java.io.IOException;
 import java.util.Objects;
 
 import static project.util.MappingForAdminConst.ADD_NEW_GAME_PAGE;
+import static project.util.MappingForAdminConst.ADD_TO_STORAGE_PAGE;
+import static project.util.MappingForAdminConst.ALL_ORDERS_PAGE;
 import static project.util.MappingForAdminConst.ALL_USERS_PAGE;
+import static project.util.MappingForAdminConst.CHANGE_ORDER_DATA;
 import static project.util.MappingForAdminConst.CHANGE_USERS_ROLE_PAGE;
+import static project.util.MappingForAdminConst.CHOOSE_ORDERS_BY_PERIOD;
 import static project.util.MappingForAdminConst.NEW_GAME_DEVELOPER_COMPANY_PAGE;
 import static project.util.MappingForAdminConst.NEW_GAME_PLATFORMS_PAGE;
+import static project.util.MappingForAdminConst.NEW_GAME_SCREENSHOTS_PAGE;
 import static project.util.MappingForAdminConst.NEW_GAME_SUBGENRE_PAGE;
+import static project.util.MappingForAdminConst.ORDER_SEARCH_RESULT;
+import static project.util.MappingForAdminConst.SET_NUMBER_TO_STORAGE_PAGE;
 
 @WebFilter(urlPatterns =
         {
@@ -28,7 +35,14 @@ import static project.util.MappingForAdminConst.NEW_GAME_SUBGENRE_PAGE;
                 CHANGE_USERS_ROLE_PAGE,
                 NEW_GAME_DEVELOPER_COMPANY_PAGE,
                 NEW_GAME_SUBGENRE_PAGE,
-                NEW_GAME_PLATFORMS_PAGE
+                NEW_GAME_PLATFORMS_PAGE,
+                NEW_GAME_SCREENSHOTS_PAGE,
+                CHOOSE_ORDERS_BY_PERIOD,
+                CHANGE_ORDER_DATA,
+                ORDER_SEARCH_RESULT,
+                SET_NUMBER_TO_STORAGE_PAGE,
+                ADD_TO_STORAGE_PAGE,
+                ALL_ORDERS_PAGE
         })
 public class AuthorizationFilter implements Filter {
 

@@ -24,7 +24,7 @@
     <c:if test="${not empty requestScope.game.recommendedSystemRequirements}">
         <p><b>Рекомендуемые системные требования:</b> ${requestScope.game.recommendedSystemRequirements}</p>
     </c:if>
-    <p><b>Возрастное ограничение:</b> ${requestScope.game.ageLimit.name}</p>
+    <p><b>Возрастное ограничение(ESRB):</b> ${requestScope.game.ageLimit.name}</p>
     <p><b>Жанры:</b>
     <c:if test="${not empty requestScope.game.genre}">
         <c:forEach var="genre" items="${requestScope.game.genre}">
@@ -40,24 +40,44 @@
     <p><b>Цены:</b></p>
     <c:if test="${not empty requestScope.game.platformPrice}">
         <table border="1">
-            <col width="120"><col width="50"><col width="150">
+            <col width="120"><col width="50"><col width="100"><col width="150">
+            <tr>
+                <th>Платформа</th>
+                <th>Стоимость</th>
+                <th>Доступно к заказу</th>
+                <th>Положить в корзину</th>
+            </tr>
         <c:forEach var="platform_price" items="${requestScope.game.platformPrice}">
             <tr>
                 <td>${platform_price.key.name}</td>
                 <td align="center">${platform_price.value} р</td>
-                <td><a href="${pageContext.request.contextPath}/add-to-basket?id=${requestScope.game.id}&name=${requestScope.game.name}&platform=${platform_price.key}&price=${platform_price.value}">Положить в корзину</a></td>
+                <td align="center">
+                    <c:forEach var="storage" items="${requestScope.storage}">
+                        <c:if test="${storage.platform.name eq platform_price.key.name}">
+                            ${storage.number} шт.
+                        </c:if>
+                    </c:forEach>
+                </td>
+                <td>
+                    <c:forEach var="storage" items="${requestScope.storage}">
+                        <c:if test="${storage.platform.name eq platform_price.key.name}">
+                            <c:if test="${not empty storage.number and storage.number ne 0}">
+                                <a href="${pageContext.request.contextPath}/add-to-basket?id=${requestScope.game.id}&name=${requestScope.game.name}&platform=${platform_price.key}&price=${platform_price.value}">Положить в корзину</a>
+                            </c:if>
+                        </c:if>
+                    </c:forEach>
+                </td>
             </tr>
         </c:forEach>
         </table>
     </c:if>
     <p><a href="${pageContext.request.contextPath}/comments?id=${requestScope.game.id}&url=game-info">Комментарии</a></p>
     <p><a href="${pageContext.request.contextPath}/add-comment?id=${requestScope.game.id}">Добавить комментарий</a></p>
-
-    <c:if test="${not empty requestScope.game.screenshots}">
-        <p><b>Скриншоты:</b>
-        <c:forEach var="screenshot" items="${requestScope.game.screenshots}">
-            <img src="${pageContext.request.contextPath}${screenshot}" align="left" vspace="15" hspace="25" width="250" alt="screenshot">
-        </c:forEach>
-    </c:if></p>
+    <p><b>Скриншоты:</b></p>
+    <c:forEach var="screenshot" items="${requestScope.game.screenshots}">
+        <c:if test="${not empty screenshot}">
+        <img src="${pageContext.request.contextPath}${screenshot}" align="left" vspace="15" hspace="25" width="250" alt="screenshot">
+        </c:if>
+    </c:forEach>
 </body>
 </html>

@@ -10,9 +10,6 @@ import javax.servlet.annotation.WebFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-/**
- * Created by 1 on 11.03.2018.
- */
 @WebFilter("/*")
 public class EncodingFilter implements Filter {
 

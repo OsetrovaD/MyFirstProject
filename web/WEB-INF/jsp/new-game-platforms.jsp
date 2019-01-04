@@ -8,7 +8,8 @@
 <body>
 <%@ include file="header.jsp"%>
 <br>
-<form action="${pageContext.request.contextPath}/new-game-platforms" method="post" style="padding-top: 50px">
+<p style="padding-top: 20px"><b>Выберите платформы:</b></p>
+<form action="${pageContext.request.contextPath}/new-game-platforms" method="post">
 <table width="500">
     <col width="200"><col width="150"><col width="150">
     <tr>

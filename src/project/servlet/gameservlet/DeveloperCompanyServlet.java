@@ -13,19 +13,24 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+import static project.util.CommonRequestParameterConstantUtil.NAME_PARAMETER;
 import static project.util.MappingForAdminConst.NEW_GAME_DEVELOPER_COMPANY_PAGE;
 import static project.util.MappingForAdminConst.NEW_GAME_SUBGENRE_PAGE;
+import static project.util.SessionParameterConstantUtil.DEVELOPER_COMPANY;
 
 @WebServlet("/developer-company")
 public class DeveloperCompanyServlet extends HttpServlet {
 
     private static final String DEFAULT = "default";
+    private static final String COMPANIES_PARAMETER = "companies";
+    private static final String PAGE_NAME = "company";
+    private static final String DEV_COMPANY_ID_PARAMETER = "dev_company";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<DeveloperCompany> companies = DeveloperCompanyService.getInstance().getAll();
-        req.setAttribute("companies", companies);
-        getServletContext().getRequestDispatcher(JspPathUtil.getPath("company")).forward(req, resp);
+        req.setAttribute(COMPANIES_PARAMETER, companies);
+        getServletContext().getRequestDispatcher(JspPathUtil.getPath(PAGE_NAME)).forward(req, resp);
     }
 
     @Override
@@ -35,22 +40,23 @@ public class DeveloperCompanyServlet extends HttpServlet {
 
         if (areFieldsEmpty(req) || areBothFieldsFilled(req)) {
             result = false;
-        } else if (StringUtil.isNotEmpty(req.getParameter("name"))) {
+        } else if (StringUtil.isNotEmpty(req.getParameter(NAME_PARAMETER))) {
             company = DeveloperCompany.builder()
-                    .id(null)
-                    .name(req.getParameter("name"))
+                    .name(req.getParameter(NAME_PARAMETER))
                     .build();
             result = true;
         } else {
             company = DeveloperCompany.builder()
-                    .id(Integer.valueOf(req.getParameter("dev_company")))
-                    .name(null)
+                    .id(Integer.valueOf(req.getParameter(DEV_COMPANY_ID_PARAMETER)))
                     .build();
             result = true;
         }
 
         if (result) {
-            req.getSession().setAttribute("developerCompany", company);
+            if (req.getSession().getAttribute(DEVELOPER_COMPANY) != null) {
+                req.getSession().removeAttribute(DEVELOPER_COMPANY);
+            }
+            req.getSession().setAttribute(DEVELOPER_COMPANY, company);
             resp.sendRedirect(NEW_GAME_SUBGENRE_PAGE);
         } else {
             resp.sendRedirect(NEW_GAME_DEVELOPER_COMPANY_PAGE);
@@ -58,10 +64,10 @@ public class DeveloperCompanyServlet extends HttpServlet {
     }
 
     private boolean areFieldsEmpty(HttpServletRequest req) {
-        return DEFAULT.equals(req.getParameter("dev_company")) && StringUtil.isEmpty(req.getParameter("name"));
+        return DEFAULT.equals(req.getParameter(DEV_COMPANY_ID_PARAMETER)) && StringUtil.isEmpty(req.getParameter(NAME_PARAMETER));
     }
 
     private boolean areBothFieldsFilled(HttpServletRequest req) {
-        return !DEFAULT.equals(req.getParameter("dev_company")) && StringUtil.isNotEmpty(req.getParameter("name"));
+        return !DEFAULT.equals(req.getParameter(DEV_COMPANY_ID_PARAMETER)) && StringUtil.isNotEmpty(req.getParameter(NAME_PARAMETER));
     }
 }

@@ -5,11 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import project.dto.ItemInOrderDto;
 import project.entity.enumonly.Condition;
 import project.entity.enumonly.DeliveryMethod;
 import project.entity.enumonly.PaymentForm;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(of = "id")
@@ -25,5 +27,6 @@ public class Order {
     private PaymentForm paymentForm;
     private LocalDate date;
     private LocalDate deliveryDate;
+    private List<ItemInOrderDto> items;
 
 }

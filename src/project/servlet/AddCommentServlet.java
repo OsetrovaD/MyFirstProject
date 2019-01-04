@@ -12,28 +12,36 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static project.util.CommonRequestParameterConstantUtil.ID_PARAMETER;
+import static project.util.ConstantUtil.SUCCESS_PAGE;
+import static project.util.SessionParameterConstantUtil.USER_FOR_SESSION_PARAMETER;
+
 @WebServlet("/add-comment")
 public class AddCommentServlet extends HttpServlet {
 
+    private static final String ADD_COMMENT_ID_URL = "/add-comment?id=";
+    private static final String COMMENT_PARAMETER = "comment";
+    private static final String PAGE_NAME = "add-comment";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("id", req.getParameter("id"));
-        getServletContext().getRequestDispatcher(JspPathUtil.getPath("add-comment")).forward(req, resp);
+        req.setAttribute(ID_PARAMETER, req.getParameter(ID_PARAMETER));
+        getServletContext().getRequestDispatcher(JspPathUtil.getPath(PAGE_NAME)).forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        UserDataForSession user = (UserDataForSession) req.getSession().getAttribute("user");
+        UserDataForSession user = (UserDataForSession) req.getSession().getAttribute(USER_FOR_SESSION_PARAMETER);
         Long addResult = CommentService.getInstance().add(NewCommentDto.builder()
-                .gameId(Long.valueOf(req.getParameter("id")))
+                .gameId(Long.valueOf(req.getParameter(ID_PARAMETER)))
                 .userId(user.getId())
-                .text(req.getParameter("comment"))
+                .text(req.getParameter(COMMENT_PARAMETER))
                 .build());
 
         if (addResult > 0) {
-            resp.sendRedirect("/success");
+            resp.sendRedirect(SUCCESS_PAGE);
         } else {
-            resp.sendRedirect("/add-comment?id=" + req.getParameter("id"));
+            resp.sendRedirect(ADD_COMMENT_ID_URL + req.getParameter(ID_PARAMETER));
         }
     }
 }

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ChangeUserDataDto {
+public class UserDataDto {
 
     private String firstName;
     private String lastName;

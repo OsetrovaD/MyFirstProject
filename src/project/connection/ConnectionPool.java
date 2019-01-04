@@ -8,9 +8,6 @@ import org.apache.tomcat.jdbc.pool.PoolProperties;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-/**
- * Created by 1 on 11.03.2018.
- */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ConnectionPool {
 

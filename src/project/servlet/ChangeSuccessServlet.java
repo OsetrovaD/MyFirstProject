@@ -12,8 +12,10 @@ import java.io.IOException;
 @WebServlet("/success")
 public class ChangeSuccessServlet extends HttpServlet {
 
+    private static final String PAGE_NAME = "change-success";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        getServletContext().getRequestDispatcher(JspPathUtil.getPath("change-success")).forward(req, resp);
+        getServletContext().getRequestDispatcher(JspPathUtil.getPath(PAGE_NAME)).forward(req, resp);
     }
 }

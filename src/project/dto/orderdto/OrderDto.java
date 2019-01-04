@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import project.entity.enumonly.DeliveryMethod;
+import project.entity.enumonly.PaymentForm;
 
 @Data
 @NoArgsConstructor
@@ -12,6 +14,6 @@ import lombok.NoArgsConstructor;
 public class OrderDto {
 
     private Long userId;
-    private String deliveryMethod;
-    private String paymentForm;
+    private DeliveryMethod deliveryMethod;
+    private PaymentForm paymentForm;
 }

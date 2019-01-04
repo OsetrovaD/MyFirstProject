@@ -16,10 +16,13 @@ import java.util.List;
 @WebServlet(value = "/all-users")
 public class AllUsersServlet extends HttpServlet {
 
+    private static final String USERS_PARAMETER = "users";
+    private static final String PAGE_NAME = "all-users";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<UserForAdminDto> users = UserService.getInstance().getAll();
-        req.setAttribute("users", users);
-        getServletContext().getRequestDispatcher(JspPathUtil.getPath("all-users")).forward(req, resp);
+        req.setAttribute(USERS_PARAMETER, users);
+        getServletContext().getRequestDispatcher(JspPathUtil.getPath(PAGE_NAME)).forward(req, resp);
     }
 }

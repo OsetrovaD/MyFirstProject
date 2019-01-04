@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import project.connection.ConnectionPool;
 import project.dto.gamedto.GameNameDto;
+import project.dto.gamedto.NamePlatformsDto;
 import project.dto.gamedto.NewGameDto;
 import project.entity.DeveloperCompany;
 import project.entity.Game;
@@ -91,7 +92,16 @@ public class GameDao {
             "SELECT id, name FROM computer_games_e_shop_storage.game WHERE issue_year = ?";
     private static final String ADD_SCREENSHOT =
             "INSERT INTO computer_games_e_shop_storage.game_screenshot (game_id, screenshot_url) VALUES (?, ?)";
-    private static final String GET_ALL = "SELECT id, name, description, issue_year FROM computer_games_e_shop_storage.game";
+    private static final String GET_ALL = "SELECT id, name, description, issue_year " +
+            "FROM computer_games_e_shop_storage.game";
+    private static final String GET_ALL_WITH_PLATFORMS = "SELECT g.id, g.name, ggp.game_platform " +
+            "FROM computer_games_e_shop_storage.game g " +
+            "JOIN computer_games_e_shop_storage.game_game_platform ggp on g.id = ggp.game_id " +
+            "ORDER BY g.id";
+    private static final String GET_ALL_WITH_PRICES = "SELECT g.id, g.name, ggp.game_platform, ggp.price " +
+            "FROM computer_games_e_shop_storage.game g " +
+            "JOIN computer_games_e_shop_storage.game_game_platform ggp on g.id = ggp.game_id " +
+            "ORDER BY g.id";
 
     private static final Map<String, String> dataBaseQueries = new HashMap<>();
 
@@ -99,6 +109,54 @@ public class GameDao {
         dataBaseQueries.put(BY_PLATFORM_SEARCH, GET_BY_PLATFORM);
         dataBaseQueries.put(BY_SUBGENRE_SEARCH, GET_BY_SUBGENRE);
         dataBaseQueries.put(BY_GENRE_SEARCH, GET_BY_GENRE);
+    }
+
+    public List<Game> getAllWithPrices() {
+        List<Game> games = new ArrayList<>();
+        Game game = null;
+        try (Connection connection = ConnectionPool.getConnection();
+             Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(GET_ALL_WITH_PRICES);
+
+            while (resultSet.next()) {
+                if (game == null || game.getId() != resultSet.getLong("id")) {
+                    games.add(game = Game.builder()
+                            .id(resultSet.getLong("id"))
+                            .name(resultSet.getString("name"))
+                            .platformPrice(new HashMap<>())
+                            .build());
+                }
+                game.getPlatformPrice().put(GamePlatform.getByName(resultSet.getString("game_platform")), resultSet.getInt("price"));
+            }
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+
+        return games;
+    }
+
+    public List<NamePlatformsDto> getAllWithPlatforms() {
+        List<NamePlatformsDto> games = new ArrayList<>();
+        NamePlatformsDto game = null;
+        try (Connection connection = ConnectionPool.getConnection();
+             Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(GET_ALL_WITH_PLATFORMS);
+
+            while (resultSet.next()) {
+                if (game == null || game.getId() != resultSet.getLong("id")) {
+                    games.add(game = NamePlatformsDto.builder()
+                            .id(resultSet.getLong("id"))
+                            .name(resultSet.getString("name"))
+                            .platforms(new ArrayList<>())
+                            .build());
+                }
+                game.getPlatforms().add(GamePlatform.getByName(resultSet.getString("game_platform")));
+            }
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+
+        return games;
     }
 
     public List<Game> getAll(String sort) {
@@ -123,7 +181,7 @@ public class GameDao {
 
     public boolean addNewGame(NewGameDto newGame, DeveloperCompany company,
                               String[] subgenres, Map<GamePlatform, Integer> platforms,
-                              Map<GamePlatform, Short> storage, String[] screenshots) {
+                              Map<GamePlatform, Short> storage, List<String> screenshots) {
         boolean isCompanyAdded;
         boolean subgenreSuccess = false;
         List<Long> storageId = new ArrayList<>();
