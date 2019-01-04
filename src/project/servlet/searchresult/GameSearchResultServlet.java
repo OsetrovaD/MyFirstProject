@@ -14,32 +14,42 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static project.util.CommonRequestParameterConstantUtil.GAMES_PARAMETER;
+import static project.util.CommonRequestParameterConstantUtil.URL_PARAMETER;
+import static project.util.ConstantUtil.BY_ISSUE_YEAR_SEARCH;
+import static project.util.ConstantUtil.BY_NAME_SEARCH;
+import static project.util.ConstantUtil.NO_RESULT_PAGE;
+
 @WebServlet("/search-result")
 public class GameSearchResultServlet extends HttpServlet {
 
+    private static final String VALUES_PARAMETER = "values";
+    private static final String PAGE_NAME = "search-result";
+    private static final String GAME_INFO_ID_URL = "/game-info?id=";
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<GameNameDto> games = null;
+        List<GameNameDto> games = new ArrayList<>();
         Game game = null;
-        switch (req.getParameter("url")) {
-            case "/by-issue-year-search":
-                games = GameService.getInstance().getByIssueYear(Integer.valueOf(req.getParameter("values")));
+        switch (req.getParameter(URL_PARAMETER)) {
+            case BY_ISSUE_YEAR_SEARCH:
+                games = GameService.getInstance().getByIssueYear(Integer.valueOf(req.getParameter(VALUES_PARAMETER)));
                 break;
-            case "/by-name-search":
-                game = GameService.getInstance().getByName(req.getParameter("values"));
+            case BY_NAME_SEARCH:
+                game = GameService.getInstance().getByName(req.getParameter(VALUES_PARAMETER));
                 break;
             default:
-                games = GameService.getInstance().getByCharacteristic(req.getParameter("values"), req.getParameter("url"));
+                games = GameService.getInstance().getByCharacteristic(req.getParameter(VALUES_PARAMETER), req.getParameter(URL_PARAMETER));
                 break;
         }
 
-        if (game == null && games == null) {
-            resp.sendRedirect("/no-result");
+        if (game == null && games.size() == 0) {
+            resp.sendRedirect(NO_RESULT_PAGE);
         } else if (game != null) {
-            resp.sendRedirect("/game-info?id=" + game.getId());
+            resp.sendRedirect(GAME_INFO_ID_URL + game.getId());
         } else {
-            req.setAttribute("games", games);
-            getServletContext().getRequestDispatcher(JspPathUtil.getPath("search-result")).forward(req, resp);
+            req.setAttribute(GAMES_PARAMETER, games);
+            getServletContext().getRequestDispatcher(JspPathUtil.getPath(PAGE_NAME)).forward(req, resp);
         }
     }
 }

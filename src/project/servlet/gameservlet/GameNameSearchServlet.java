@@ -12,8 +12,10 @@ import java.io.IOException;
 @WebServlet("/by-name-search")
 public class GameNameSearchServlet extends HttpServlet {
 
+    private static final String PAGE_NAME = "search-by-name";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        getServletContext().getRequestDispatcher(JspPathUtil.getPath("search-by-name")).forward(req, resp);
+        getServletContext().getRequestDispatcher(JspPathUtil.getPath(PAGE_NAME)).forward(req, resp);
     }
 }

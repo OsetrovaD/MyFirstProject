@@ -15,10 +15,13 @@ import java.util.List;
 @WebServlet("/by-platform-search")
 public class GamePlatformSearchServlet extends HttpServlet {
 
+    private static final String PAGE_NAME = "search-by-platform";
+    private static final String PLATFORMS_PARAMETER = "platforms";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<GamePlatform> platforms = GamePlatformService.getInstance().getAll();
-        req.setAttribute("platforms", platforms);
-        getServletContext().getRequestDispatcher(JspPathUtil.getPath("search-by-platform")).forward(req, resp);
+        req.setAttribute(PLATFORMS_PARAMETER, platforms);
+        getServletContext().getRequestDispatcher(JspPathUtil.getPath(PAGE_NAME)).forward(req, resp);
     }
 }

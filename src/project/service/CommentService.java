@@ -6,7 +6,6 @@ import project.dao.CommentDao;
 import project.dto.commentdto.GameCommentDto;
 import project.dto.commentdto.NewCommentDto;
 import project.dto.commentdto.UserCommentDto;
-import project.entity.Comment;
 
 import java.util.List;
 

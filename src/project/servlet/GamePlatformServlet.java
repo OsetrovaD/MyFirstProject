@@ -14,13 +14,17 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import static project.util.SessionParameterConstantUtil.PLATFORMS;
+
 @WebServlet("/gameplatform")
 public class GamePlatformServlet extends HttpServlet {
+
+    private static final String PAGE_NAME = "search-by-platform";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<GamePlatform> platforms = GamePlatformService.getInstance().getAll();
-        req.setAttribute("platforms", platforms);
-        getServletContext().getRequestDispatcher(JspPathUtil.getPath("search-by-platform")).forward(req, resp);
+        req.setAttribute(PLATFORMS, platforms);
+        getServletContext().getRequestDispatcher(JspPathUtil.getPath(PAGE_NAME)).forward(req, resp);
     }
 }

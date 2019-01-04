@@ -3,7 +3,7 @@ package project.service;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import project.dao.UserDao;
-import project.dto.userdto.ChangeUserDataDto;
+import project.dto.userdto.UserDataDto;
 import project.dto.userdto.NewUserDto;
 import project.dto.userdto.UserDataForSession;
 import project.dto.userdto.UserDto;
@@ -19,6 +19,25 @@ public class UserService {
 
     public UserDataForSession getByLoginAndPassword(UserDto userDto) {
         return UserDao.getInstance().getByLoginAndPassword(userDto);
+    }
+
+    public UserDataForSession getById(Long userId) {
+        return UserDao.getInstance().getById(userId);
+    }
+
+    public UserDataDto getInfo(Long userId) {
+        User user = UserDao.getInstance().getInfo(userId);
+        return UserDataDto.builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .address(user.getAddress())
+                .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .build();
+    }
+
+    public boolean updateData(Long userId, String parameter, String value) {
+        return UserDao.getInstance().updateData(userId, parameter, value);
     }
 
     public List<UserForAdminDto> getAll() {
@@ -38,7 +57,7 @@ public class UserService {
         return UserDao.getInstance().save(tempUser);
     }
 
-    public boolean update(ChangeUserDataDto changes, Long id) {
+    public boolean update(UserDataDto changes, Long id) {
         User tempUser = User.builder()
                 .id(id)
                 .firstName(changes.getFirstName())

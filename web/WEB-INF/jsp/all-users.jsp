@@ -31,7 +31,9 @@
                 <td>${user.role.name}</td>
                 <td>${user.phoneNumber}</td>
                 <td>
+                    <c:if test="${user.id ne sessionScope.user.id and user.id ne 1}">
                     <a href="${pageContext.request.contextPath}/change-role?id=${user.id}">Изменить роль пользователя</a>
+                    </c:if>
                 </td>
             </tr>
         </c:forEach>

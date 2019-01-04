@@ -8,8 +8,8 @@
 <body>
 <%@ include file="header.jsp"%>
 <br>
-<table width="1200" style="padding-top: 20px">
-    <col width="200"><col width="800"><col width="200">
+<table width="850" style="padding-top: 20px">
+    <col width="200"><col width="450"><col width="200">
     <c:if test="${requestScope.url eq 'user'}">
             <tr>
                 <th align="left">Название игры</th>

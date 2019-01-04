@@ -14,12 +14,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
 
+import static project.util.ConstantUtil.CHANGE_LOCALE;
+import static project.util.ConstantUtil.REGISTER_PAGE;
+import static project.util.ConstantUtil.START_PAGE;
+
 @WebFilter("/*")
 public class AuthenticationFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        if (isLoginPage(servletRequest) || isUserAuthorized(servletRequest)) {
+        if (isStartPage(servletRequest) || isChangeLocaleQuery(servletRequest) || isRegisterPage(servletRequest) || isLoginPage(servletRequest) || isUserAuthorized(servletRequest)) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
             ((HttpServletResponse) servletResponse).sendRedirect("/login");
@@ -34,5 +38,20 @@ public class AuthenticationFilter implements Filter {
     public boolean isLoginPage(ServletRequest servletRequest) {
         String requestURI = ((HttpServletRequest) servletRequest).getRequestURI();
         return MappingForAdminConst.LOGIN_PAGE.equals(requestURI);
+    }
+
+    public boolean isStartPage(ServletRequest servletRequest) {
+        String requestURI = ((HttpServletRequest) servletRequest).getRequestURI();
+        return START_PAGE.equals(requestURI);
+    }
+
+    public boolean isRegisterPage(ServletRequest servletRequest) {
+        String requestURI = ((HttpServletRequest) servletRequest).getRequestURI();
+        return REGISTER_PAGE.equals(requestURI);
+    }
+
+    public boolean isChangeLocaleQuery(ServletRequest servletRequest) {
+        String requestURI = ((HttpServletRequest) servletRequest).getRequestURI();
+        return CHANGE_LOCALE.equals(requestURI);
     }
 }

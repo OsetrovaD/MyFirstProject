@@ -18,5 +18,5 @@ public class GameInBasket {
     String name;
     GamePlatform platform;
     Integer price;
-    Integer number;
+    Short number;
 }

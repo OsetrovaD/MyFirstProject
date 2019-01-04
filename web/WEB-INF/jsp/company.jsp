@@ -8,7 +8,16 @@
 <body>
 <%@ include file="header.jsp"%>
 <br>
-<form action="${pageContext.request.contextPath}/developer-company" method="post" style="padding-top: 50px">
+<p style="padding-top: 20px"><b>Проверьте правильность данных, введённых на предыдущей странице</b></p>
+<p><b>Название:</b> ${sessionScope.game_info.name}</p>
+<p><b>Описание:</b> ${sessionScope.game_info.description}</p>
+<p><b>Год выпуска:</b> ${sessionScope.game_info.yearOfIssue}</p>
+<p><b>Минимальные системные требования:</b> ${sessionScope.game_info.minimalSystemRequirements}</p>
+<p><b>Рекомендуемые системные требования:</b> ${sessionScope.game_info.recommendedSystemRequirements}</p>
+<p><b>Возрастное ограничение:</b> ${sessionScope.game_info.ageLimit.name}</p>
+<p><b>Ссылка на постер:</b> ${sessionScope.game_info.image}</p>
+<br>
+<form action="${pageContext.request.contextPath}/developer-company" method="post">
     <label>Выберите компанию из списка:
         <select name="dev_company">
             <c:forEach var="company" items="${requestScope.companies}">

@@ -1,4 +1,4 @@
-package project.dto;
+package project.dto.gamedto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,13 +6,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import project.entity.enumonly.GamePlatform;
 
-import java.util.Map;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class StorageDto {
+public class NamePlatformsDto {
 
-    Map<GamePlatform, Short> platformNumber;
+    private Long id;
+    private String name;
+    private List<GamePlatform> platforms;
 }
